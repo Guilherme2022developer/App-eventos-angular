@@ -12,7 +12,7 @@ export class OrganizadorService extends SeviceBase {
 
     registrarOrganizador(organizador: Organizador): Observable<Organizador>{
         return this.http
-        .post(this.UrlServiceV1 + 'registrar-nova-conta',organizador,super.ObterHeaderJson())
+        .post(this.UrlServiceV1 + 'nova-conta',organizador,super.ObterHeaderJson())
         .pipe(
             map(super.extractData),
             catchError(super.seviceError)
@@ -21,7 +21,7 @@ export class OrganizadorService extends SeviceBase {
 
     login(organizador: Organizador): Observable<Organizador>{
         return this.http
-        .post(this.UrlServiceV1 + 'entrar',organizador,super.ObterHeaderJson())
+        .post(this.UrlServiceV1 + 'conta',organizador,super.ObterHeaderJson())
         .pipe(
             map(super.extractData),
             catchError(super.seviceError)

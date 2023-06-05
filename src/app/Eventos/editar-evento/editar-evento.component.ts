@@ -3,11 +3,12 @@ import { FormBuilder, FormControlName, FormGroup, Validators } from '@angular/fo
 import { ActivatedRoute, Router } from '@angular/router';
 import { SnotifireService } from 'ngx-snotifire';
 import { fromEvent, merge, Observable, Subscription } from 'rxjs';
-import { EventoService } from 'src/app/services/evento.service';
-import { GenericValidator } from 'src/app/utils/generic.form.validator';
+import { CurrencyUtils } from 'src/app/comom/data-type-utils/CurrencyUtils';
+import { DateUtils } from 'src/app/comom/data-type-utils/data-type-utils';
+import { GenericValidator } from 'src/app/comom/data-type-utils/validation/generic.form.validator';
+import { EventoService } from 'src/app/Eventos/services/evento.service';
 import { Categoria, Endereco, Evento } from '../modls_eventos/evento';
-import { DateUtils } from 'src/app/utils/data-type-utils';
-import { CurrencyUtils } from 'src/app/utils/CurrencyUtils';
+
 
 
 @Component({
@@ -34,35 +35,36 @@ export class EditarEventoComponent implements OnInit, AfterViewInit {
   public EventoId: string;
   public sub: Subscription;
 
-  private validationMessages: { [key: string]: { [key: string]: string } };
-  private genericValidator: GenericValidator;
-  public displayMessage: { [key: string]: string } = {};
+
 
   constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute, private snotifireService: SnotifireService, private eventoService: EventoService) {
     this.validationMessages = {
       nome: {
-        require: 'O Nome é requirido',
+        required: 'O Nome é requerido.',
         minlength: 'O Nome precisa ter no mínimo 2 caracteres',
         maxlength: 'O Nome precisa ter no máximo 150 caracteres'
       },
       dataInicio: {
-        require: 'O dataInicio é requirido',
+        required: 'Informe a data de início'
       },
       dataFim: {
-        require: 'O dataFim é requirido',
-
-
+        required: 'Informe a data de encerramento'
       },
-      organizadorId: {
-        require: 'O organizador é requirido',
+      categoriaId: {
+        required: 'Informe a categoria'
       }
-    }
+    };
+
     this.genericValidator = new GenericValidator(this.validationMessages);
     this.evento = new Evento();
     this.evento.endereco = new Endereco();
+    this.modalVisible = false;
 
   }
 
+  private validationMessages: { [key: string]: { [key: string]: string } };
+  private genericValidator: GenericValidator;
+  public displayMessage: { [key: string]: string } = {};
 
   ngAfterViewInit() {
     let controlBlurs: Observable<any>[] = this.formInputElements.map((formControl: ElementRef) => fromEvent(formControl.nativeElement, 'blur'));

@@ -3,10 +3,11 @@ import { FormBuilder, FormControlName, FormGroup, Validators } from '@angular/fo
 import { Router } from '@angular/router';
 import { SnotifireService } from 'ngx-snotifire';
 import { fromEvent, merge, Observable } from 'rxjs';
-import { EventoService } from 'src/app/services/evento.service';
-import { GenericValidator } from 'src/app/utils/generic.form.validator';
+import { EventoService } from 'src/app/Eventos/services/evento.service';
+import { GenericValidator } from 'src/app/comom/data-type-utils/validation/generic.form.validator';
 import { Categoria, Endereco, Evento } from '../modls_eventos/evento';
-import { DateUtils } from 'src/app/utils/data-type-utils';
+import { DateUtils } from 'src/app/comom/data-type-utils/data-type-utils';
+import { CurrencyUtils } from 'src/app/comom/data-type-utils/CurrencyUtils';
 
 
 @Component({
@@ -27,57 +28,56 @@ export class AdicionarEventoComponent implements OnInit, AfterViewInit {
   public gratuito: Boolean;
   public online: Boolean;
 
-  private validationMessages: { [key: string]: { [key: string]: string } };
-  private genericValidator: GenericValidator;
-  public displayMessage: { [key: string]: string } = {};
+ 
 
   constructor(private fb: FormBuilder, private router: Router, private snotifireService: SnotifireService, private eventoService : EventoService) {
     this.validationMessages = {
       nome: {
-        require: 'O Nome é requirido',
+        required: 'O Nome é requerido.',
         minlength: 'O Nome precisa ter no mínimo 2 caracteres',
         maxlength: 'O Nome precisa ter no máximo 150 caracteres'
       },
       dataInicio: {
-        require: 'O dataInicio é requirido',
+        required: 'Informe a data de início'
       },
       dataFim: {
-        require: 'O dataFim é requirido',
-
-
+        required: 'Informe a data de encerramento'
       },
-      organizadorId: {
-        require: 'O organizador é requirido',
+      categoriaId: {
+        required: 'Informe a categoria'
       }
-    }
+    };
+    
     this.genericValidator = new GenericValidator(this.validationMessages);
     this.evento = new Evento();
     this.evento.endereco = new Endereco();
   }
 
-  ngOnInit() {
+  private validationMessages: { [key: string]: { [key: string]: string } };
+  private genericValidator: GenericValidator;
+  public displayMessage: { [key: string]: string } = {};
+  
+  ngOnInit(): void {
     this.eventoForm = this.fb.group({
-      nome: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(150)]],
-      // cpf: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]],
-      organizadorId: ['', [Validators.required]],
-      decricaoCurta: [''],
-      descricaolonga: [''],
-      dataInicio: ['', [Validators.required]],
-      datafim: ['', [Validators.required]],
-      gratuito: [''],
-      valor: ['0'],
-      online: [''],
-      nomeEmpresa: [''],
-      logradouro: [''],
-      numero: [''],
-      complemento: [''],
-      bairro: [''],
-      cidade: [''],
-      estado: [''],
-      cep: [''],
-      Token: [],
-      role: []
-
+      nome: ['', [Validators.required,
+      Validators.minLength(2),
+      Validators.maxLength(150)]],
+      categoriaId: ['', Validators.required],
+      descricaoCurta: '',
+      descricaoLonga: '',
+      dataInicio: ['', Validators.required],
+      dataFim: ['', Validators.required],
+      gratuito: '',
+      valor: '0',
+      online: '',
+      nomeEmpresa: '',
+      logradouro: '',
+      numero: '',
+      complemento: '',
+      bairro: '',
+      cep: '',
+      cidade: '',
+      estado: '',
     });
 
     this.eventoService.ObterCategoria()
@@ -98,22 +98,25 @@ export class AdicionarEventoComponent implements OnInit, AfterViewInit {
   }
 
   adicionarEvento() {
-    if (this, this.eventoForm.valid && this.eventoForm.dirty) {
-
-      const e = Object.assign({}, this.eventoForm, this.eventoForm.value);
+    if (this.eventoForm.dirty && this.eventoForm.valid) {
       let user = this.eventoService.obterUsuario();
-      e.dataInicio = DateUtils.getMyDatePickerDate(e.dataInicio);
-      e.dataFim = DateUtils.getMyDatePickerDate(e.dataFim);
-      e.organizadorId = user.Id;
-      e.endereco.logradouro = e.logradouro;
-      e.endereco.numero = e.numero;
-      e.endereco.complemento = e.complemento;
-      e.endereco.bairro = e.bairro;
-      e.endereco.cep = e.cep;
-      e.endereco.cidade = e.cidade;
-      e.endereco.estado = e.estado;
 
-      this.eventoService.registrarEvento(e).subscribe(
+      let p = Object.assign({}, this.evento, this.eventoForm.value);
+      p.organizadorId = user.id;
+      
+      p.valor = CurrencyUtils.ToDecimal(p.valor);
+
+      p.dataInicio = DateUtils.getMyDatePickerDate(p.dataInicio);
+      p.dataFim = DateUtils.getMyDatePickerDate(p.dataFim);
+      p.endereco.logradouro = p.logradouro;
+      p.endereco.numero = p.numero;
+      p.endereco.complemento = p.complemento;
+      p.endereco.bairro = p.bairro;
+      p.endereco.cep = p.cep;
+      p.endereco.cidade = p.cidade;
+      p.endereco.estado = p.estado;
+
+      this.eventoService.registrarEvento(p).subscribe(
         result => {this.onSalveComplete},
         fail => {this.onError(fail)}
       );

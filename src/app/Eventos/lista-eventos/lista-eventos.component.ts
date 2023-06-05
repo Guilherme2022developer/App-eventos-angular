@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { EventoService } from 'src/app/services/evento.service';
+import { EventoService } from 'src/app/Eventos/services/evento.service';
 import { SeoModel, SeoService } from 'src/app/services/seo.service';
 import { Evento } from '../modls_eventos/evento';
 

@@ -1,8 +1,8 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { catchError, map, Observable } from "rxjs";
-import { Categoria, Endereco, Evento } from "../Eventos/modls_eventos/evento";
-import { SeviceBase } from "./sevice.base";
+import { Categoria, Endereco, Evento } from "../modls_eventos/evento";
+import { SeviceBase } from "../../services/sevice.base";
 
 
 
@@ -14,7 +14,7 @@ export class EventoService extends SeviceBase{
 
         ObterCategoria() : Observable<Categoria[]>{
             return this.http
-            .get<Categoria[]>(this.UrlServiceV1 + "eventos/obter-categorias")
+            .get<Categoria[]>(this.UrlServiceV1 + "eventos/categorias")
             .pipe(catchError(super.seviceError));
         }
 
@@ -24,39 +24,12 @@ export class EventoService extends SeviceBase{
             .pipe(map(super.extractData),catchError(super.seviceError));
         }
 
-         obterUsuario() {
-            const item = localStorage.getItem('eio.user');
-            if (item !== null) {
-                return JSON.parse(item);
-            }
-            return null;
-        }
-
+        
         obterTodos() : Observable<Evento[]>{
             return this.http
-            .get<Evento[]>(this.UrlServiceV1 + "eventos/obter-todos")
+            .get<Evento[]>(this.UrlServiceV1 + "eventos")
             .pipe(catchError(super.seviceError));
         }
-
-        atualizarEvento(evento: Evento):Observable<Evento>{
-            return this.http
-            .put(this.UrlServiceV1 + "evento/atualizar",evento,super.ObterAuthHeaderJson())
-            .pipe(map(super.extractData),
-            catchError(super.seviceError));
-        };
-
-        ExcluirEvento(id: string):Observable<Evento>{
-            return this.http
-            .delete(this.UrlServiceV1 + "evento/delete/" + id,super.ObterAuthHeaderJson())
-            .pipe(map(super.extractData),
-            catchError(super.seviceError));
-        };
-        obterMeusEventos():Observable<Evento>{
-            return this.http
-            .get(this.UrlServiceV1 + "eventos/meus-eventos",super.ObterAuthHeaderJson())
-            .pipe(map(super.extractData),
-            catchError(super.seviceError));
-        };
 
         obterEvento(id: string):Observable<Evento>{
             return this.http
@@ -64,13 +37,36 @@ export class EventoService extends SeviceBase{
             .pipe(
             catchError(super.seviceError));
         };
-//ajustar pra pegar somente do responsavel passando idevento e idorganizador
+
+       
         obterMeuEvento(id: string):Observable<Evento>{
-           return  this.http
-            .get<Evento>(this.UrlServiceV1 + "eventos/" + id)
-            .pipe(
+            return  this.http
+             .get<Evento>(this.UrlServiceV1 + "eventos/meus-eventos/" + id)
+             .pipe(
+             catchError(super.seviceError));
+         };
+
+         obterMeusEventos():Observable<Evento>{
+            return this.http
+            .get(this.UrlServiceV1 + "eventos/meus-eventos",super.ObterAuthHeaderJson())
+            .pipe(map(super.extractData),
             catchError(super.seviceError));
         };
+
+        atualizarEvento(evento: Evento):Observable<Evento>{
+            return this.http
+            .put(this.UrlServiceV1 + "eventos",evento,super.ObterAuthHeaderJson())
+            .pipe(map(super.extractData),
+            catchError(super.seviceError));
+        };
+
+        ExcluirEvento(id: string):Observable<Evento>{
+            return this.http
+            .delete(this.UrlServiceV1 + "eventos/" + id,super.ObterAuthHeaderJson())
+            .pipe(map(super.extractData),
+            catchError(super.seviceError));
+        };
+       
 
         adicionarEndereco(endereco: Endereco):Observable<Endereco>{
             let response =  this.http

@@ -1,7 +1,7 @@
 import { Injectable} from "@angular/core";
 import { Title } from "@angular/platform-browser";
 import { ɵgetDOM  } from "@angular/platform-browser";
-import { stringUtils } from "../utils/string.utils";
+import { stringUtils } from "../comom/data-type-utils/string.utils";
 
 @Injectable()
 export class SeoService{

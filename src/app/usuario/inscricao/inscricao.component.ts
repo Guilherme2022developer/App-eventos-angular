@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { SnotifireService } from 'ngx-snotifire';
 import { fromEvent, merge, Observable } from 'rxjs';
 import { OrganizadorService } from 'src/app/services/organizador.sevice';
-import { GenericValidator } from 'src/app/utils/generic.form.validator';
+import { GenericValidator } from 'src/app/comom/data-type-utils/validation/generic.form.validator';
 import { Organizador } from './models/organizador';
 
 
