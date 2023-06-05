@@ -1,0 +1,11 @@
+.has-error * {
+   display: block;
+   color: red;
+   border-color: red;
+   /* outras propriedades CSS */
+}
+input,
+select,
+textarea {
+max-width: 280;
+}

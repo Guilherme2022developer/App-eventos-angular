@@ -1,0 +1,166 @@
+<h4>Preencha corretamente os dados</h4>
+
+<form (ngSubmit)="adicionarEvento()" [formGroup]="eventoForm">
+  <div class="form-horizontal">
+    <div class="alert alert-danger" *ngIf="errors.length > 0">
+      <h3 id="msgRetorno">Opa! Alguma coisa não deu certo:</h3>
+      <ul>
+        <li *ngFor="let error of errors">{{ error }}</li>
+      </ul>
+    </div>
+
+    <div class="form-group" [ngClass]="{'has-error': displayMessage['nome']}">
+      <label class="col-md-2 control-label" for="nome"> Nome do Evento </label>
+      <div class="col-md-10">
+        <input class="form-control" id="nome" type="text" placeholder="Nome (requerido)" formControlName="nome" />
+        <span class="text-danger">
+          <p [innerHTML]="displayMessage['nome']"></p>
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group" [ngClass]="{'has-error': displayMessage['descricaCurta']}">
+      <label class="col-md-2 control-label">Descrição Curta</label>
+      <div class="col-md-10">
+        <input class="form-control" id="descricaoCurta" type="text" placeholder="Descrição Curta"
+          formControlName="decricaoCurta">
+        <span class="text-danger">
+          <p [innerHTML]="displayMessage['descricaCurta']"></p>
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group" [ngClass]="{'has-error': displayMessage['descricaoLonga']}">
+      <label class="col-md-2 control-label">Mais detalhes</label>
+      <div class="col-md-10">
+        <textarea class="form-control" id="descricaoLonga" cols="40" rows="5" placeholder="Descrição Longa"
+          formControlName="descricaolonga"></textarea>
+        <span class="text-danger">
+          <p [innerHTML]="displayMessage['descricaoLonga']"></p>
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group" [ngClass]="{'has-error': displayMessage['categoriaId']}">
+      <label class="col-md-2 control-label">Categoria</label>
+      <div class="col-md-10">
+        <select class="form-control" formControlName="organizadorId" id="categoriaId">
+          <option *ngFor="let categoria of categorias" [value]="categoria.id">{{ categoria.nome }}</option>
+        </select>
+        <span class="text-danger">
+          <p [innerHTML]="displayMessage['categoriaId']"></p>
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group" [ngClass]="{'has-error': displayMessage['dataInicio']}">
+      <label class="col-md-2 control-label">Data de Início</label>
+      <div class="col-md-10">
+       <my-date-picker id="dataInicio" name="dataInicio" [options]="myDatePickerOptions" formControlName="dataInicio" ></my-date-picker>
+        <span class="text-danger">
+          <p [innerHTML]="displayMessage['dataInicio']"></p>
+        </span>
+      </div>
+    </div>
+    <div class="form-group" [ngClass]="{'has-error': displayMessage['dataFim']}">
+      <label class="col-md-2 control-label">Data de Fim</label>
+      <div class="col-md-10">
+        <my-date-picker id="dataFim" name="dataFim" [options]="myDatePickerOptions" formControlName="dataFim" ></my-date-picker>
+        <span class="text-danger">
+          <p [innerHTML]="displayMessage['dataFim']"></p>
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group" [ngClass]="{'has-error': displayMessage['gratuito']}">
+      <label class="col-md-2 control-label">Gratuito</label>
+      <div class="col-md-10">
+        <input type="checkbox" class="form-control" id="gratuito" [(ngModel)]="gratuito" placeholder="gratuito"
+          formControlName="gratuito">
+        <label for="gratuito">Será gratuito</label>
+        <span class="text-danger">
+          <p [innerHTML]="displayMessage['gratuito']"></p>
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group" *ngIf="!gratuito">
+      <label class="col-md-2 control-label">Valor</label>
+      <div class="col-md-10">
+        <input class="form-control" id="valor" value="0" type="text" placeholder="Valor R$" formControlName="valor">
+      </div>
+    </div>
+
+    <div class="form-group" [ngClass]="{'has-error': displayMessage['online']}">
+      <label class="col-md-2 control-label">Online</label>
+      <div class="col-md-10">
+        <input type="checkbox" class="form-control" id="online" [(ngModel)]="online" placeholder="online"
+          formControlName="online">
+        <label for="online">Será online</label>
+        <span class="text-danger">
+          <p [innerHTML]="displayMessage['online']"></p>
+        </span>
+      </div>
+    </div>
+
+    <div id="partialEndereco" *ngIf="!online">
+      <hr>
+      <h3>Endereço</h3>
+      <div class="form-group" [ngClass]="{'has-error': displayMessage['logradouro']}">
+        <label class="col-md-2 control-label">Logradouro</label>
+        <div class="col-md-10">
+          <input type="text" id="logradouro" name="logradouro" formControlName="logradouro">
+          <span class="text-danger">
+            <p [innerHTML]="displayMessage['logradouro']"></p>
+          </span>
+        </div>
+      </div>
+
+      <div class="form-group" [ngClass]="{'has-error': displayMessage['numero']}">
+        <label class="col-md-2 control-label">Número</label>
+        <div class="col-md-10">
+          <input type="text" id="numero" name="numero" formControlName="numero">
+          <span class="text-danger">
+            <p [innerHTML]="displayMessage['numero']"></p>
+          </span>
+        </div>
+      </div>
+
+      <div class="form-group" [ngClass]="{'has-error': displayMessage['complemento']}">
+        <label class="col-md-2 control-label">Complemento</label>
+        <div class="col-md-10">
+          <input type="text" id="complemento" name="complemento" formControlName="complemento">
+          <span class="text-danger">
+            <p [innerHTML]="displayMessage['complemento']"></p>
+          </span>
+        </div>
+      </div>
+
+      <div class="form-group" [ngClass]="{'has-error': displayMessage['cidade']}">
+        <label class="col-md-2 control-label">Cidade</label>
+        <div class="col-md-10">
+          <input type="text" id="cidade" name="cidade" formControlName="cidade">
+          <span class="text-danger">
+            <p [innerHTML]="displayMessage['cidade']"></p>
+          </span>
+        </div>
+      </div>
+
+      <div class="form-group" [ngClass]="{'has-error': displayMessage['estado']}">
+        <label class="col-md-2 control-label">Estado</label>
+        <div class="col-md-10">
+          <input type="text" id="estado" name="estado" formControlName="estado">
+          <span class="text-danger">
+            <p [innerHTML]="displayMessage['estado']"></p>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="col-md-offset-2 col-md-10">
+        <button class="btn btn-primary" type="submit">Salvar</button>
+      </div>
+    </div>
+  </div>
+</form>

@@ -1,0 +1,258 @@
+<div *ngIf="isDataAvailable">
+    <h2>Novo Evento</h2>
+    <h4>Preencha Corretamente os dados</h4>
+    <hr />
+
+    <form novalidate (ngSubmit)="editarEvento()" [formGroup]="eventoForm">
+        <div class="form-horizontal">
+            <div class="alert alert-danger" *ngIf="errors.length > 0">
+                <h3 id="msgRetorno">Opa! Alguma coisa não deu certo:</h3>
+                <ul>
+                    <li *ngFor="let error of errors">{{ error }}</li>
+                </ul>
+            </div>
+            <div class="form-group" [ngClass]="{'has-error': displayMessage['nome']}">
+                <label class="col-md-2 control-label" for="nome"> Nome do Evento </label>
+                <div class="col-md-10">
+                    <input class="form-control" id="nome" type="text" placeholder="Nome (requerido)"
+                        formControlName="nome" />
+                    <span class="text-danger">
+                        <p [innerHTML]="displayMessage['nome']"></p>
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-group" [ngClass]="{'has-error': displayMessage['descricaCurta']}">
+                <label class="col-md-2 control-label">Descrição Curta</label>
+                <div class="col-md-10">
+                    <input class="form-control" id="descricaoCurta" type="text" placeholder="Descrição Curta"
+                        formControlName="decricaoCurta">
+                    <span class="text-danger">
+                        <p [innerHTML]="displayMessage['descricaCurta']"></p>
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-group" [ngClass]="{'has-error': displayMessage['descricaoLonga']}">
+                <label class="col-md-2 control-label">Mais detalhes</label>
+                <div class="col-md-10">
+                    <textarea class="form-control" id="descricaoLonga" cols="40" rows="5" placeholder="Descrição Longa"
+                        formControlName="descricaolonga"></textarea>
+                    <span class="text-danger">
+                        <p [innerHTML]="displayMessage['descricaoLonga']"></p>
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-group" [ngClass]="{'has-error': displayMessage['categoriaId']}">
+                <label class="col-md-2 control-label">Categoria</label>
+                <div class="col-md-10">
+                    <select class="form-control" formControlName="organizadorId" id="categoriaId">
+                        <option *ngFor="let categoria of categorias" [value]="categoria.id">{{ categoria.nome }}
+                        </option>
+                    </select>
+                    <span class="text-danger">
+                        <p [innerHTML]="displayMessage['categoriaId']"></p>
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-group" [ngClass]="{'has-error': displayMessage['dataInicio']}">
+                <label class="col-md-2 control-label">Data de Início</label>
+                <div class="col-md-10">
+                    <my-date-picker id="dataInicio" name="dataInicio" [options]="myDatePickerOptions"
+                        formControlName="dataInicio"></my-date-picker>
+                    <span class="text-danger">
+                        <p [innerHTML]="displayMessage['dataInicio']"></p>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group" [ngClass]="{'has-error': displayMessage['dataFim']}">
+                <label class="col-md-2 control-label">Data de DataFim</label>
+                <div class="col-md-10">
+                    <my-date-picker id="dataFim" name="DataFim" [options]="myDatePickerOptions"
+                        formControlName="dataFim"></my-date-picker>
+                    <span class="text-danger">
+                        <p [innerHTML]="displayMessage['dataFim']"></p>
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-group" [ngClass]="{'has-error': displayMessage['gratuito']}">
+                <label class="col-md-2 control-label">Gratuito</label>
+                <div class="col-md-10">
+                    <input type="checkbox" class="form-control" id="gratuito" [(ngModel)]="gratuito"
+                        placeholder="gratuito" formControlName="gratuito">
+                    <label for="gratuito">Será gratuito</label>
+                    <span class="text-danger">
+                        <p [innerHTML]="displayMessage['gratuito']"></p>
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-group" *ngIf="!gratuito">
+                <label class="col-md-2 control-label">Valor</label>
+                <div class="col-md-10">
+                    <input class="form-control" id="valor" value="0" type="text" placeholder="Valor R$"
+                        formControlName="valor">
+                </div>
+            </div>
+
+            <div class="form-group" [ngClass]="{'has-error': displayMessage['online']}">
+                <label class="col-md-2 control-label">Online</label>
+                <div class="col-md-10">
+                    <input type="checkbox" class="form-control" id="online" [(ngModel)]="online" placeholder="online"
+                        formControlName="online">
+                    <label for="online">Será online</label>
+                    <span class="text-danger">
+                        <p [innerHTML]="displayMessage['online']"></p>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div id="EnderecoPartial" *ngIf="!online">
+        <hr />
+        <h3>Endereço</h3>
+        <table class="table" *ngIf="!evento.endereco">
+            <tr>
+                <th>
+                    <button type="button" class="btn btn-info (click)='showModal'">
+                        <span title="Incluir Endereco" class="fa-solid fa-plus"></span> Adicionar Endereço
+                    </button>
+                </th>
+            </tr>
+        </table>
+
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Logradouro</th>
+                    <th>Numero</th>
+                    <th>complemento</th>
+                    <th>Bairro</th>
+                    <th>cep</th>
+                    <th>Cidade</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tr>
+                <td>
+                    {{evento.endereco.logradouro}}
+                </td>
+                <td>
+                    {{evento.endereco.numero}}
+                </td>
+                <td>
+                    {{evento.endereco.complemento}}
+                </td>
+                <td>
+                    {{evento.endereco.bairro}}
+                </td>
+                <td>
+                    {{evento.endereco.cep}}
+                </td>
+                <td>
+                    {{evento.endereco.cidade}}
+                </td>
+                <td>
+                    {{evento.endereco.estado}}
+                </td>
+                <td>
+                    <div>
+                        <button type="button" class="btn btn-info (click)='showModal()'">
+                            <span title="Alterar Endereco" class="fa-sharp fa-solid fa-pen-circle"></span>Alterar
+                            Endereço
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="myModal" class="modal fade in" [ngStyle]="{'display': modalVisible ? 'block': 'none'}">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button (click)="hideModal()" type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">x</span>
+                        <span class="sr-only">Fechar</span>
+                    </button>
+                    <h4 class="mdoal-title">Endereço</h4>
+                </div>
+                <form novalidate (ngSubmit)="atualizarEndereco()" [formGroup]="enderecoForm">
+                    <div class="modal-body">
+                        <div class="form-horizontal">
+                            <div class="alert alert-danger" *ngIf="errors.length > 0">
+                                <h3 id="msgRetorno">Opa! Alguma coisa não deu certo:</h3>
+                                <ul>
+                                    <li *ngFor="let error of errors">{{ error }}</li>
+                                </ul>
+                            </div>
+                            <div class="form-group" [ngClass]="{'has-error': displayMessage['logradouro']}">
+                                <label class="col-md-2 control-label">Logradouro</label>
+                                <div class="col-md-10">
+                                    <input type="text" id="logradouro" name="logradouro" formControlName="logradouro">
+                                    <span class="text-danger">
+                                        <p [innerHTML]="displayMessage['logradouro']"></p>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group" [ngClass]="{'has-error': displayMessage['numero']}">
+                                <label class="col-md-2 control-label">Número</label>
+                                <div class="col-md-10">
+                                    <input type="text" id="numero" name="numero" formControlName="numero">
+                                    <span class="text-danger">
+                                        <p [innerHTML]="displayMessage['numero']"></p>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group" [ngClass]="{'has-error': displayMessage['complemento']}">
+                                <label class="col-md-2 control-label">Complemento</label>
+                                <div class="col-md-10">
+                                    <input type="text" id="complemento" name="complemento"
+                                        formControlName="complemento">
+                                    <span class="text-danger">
+                                        <p [innerHTML]="displayMessage['complemento']"></p>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group" [ngClass]="{'has-error': displayMessage['cidade']}">
+                                <label class="col-md-2 control-label">Cidade</label>
+                                <div class="col-md-10">
+                                    <input type="text" id="cidade" name="cidade" formControlName="cidade">
+                                    <span class="text-danger">
+                                        <p [innerHTML]="displayMessage['cidade']"></p>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group" [ngClass]="{'has-error': displayMessage['estado']}">
+                                <label class="col-md-2 control-label">Estado</label>
+                                <div class="col-md-10">
+                                    <input type="text" id="estado" name="estado" formControlName="estado">
+                                    <span class="text-danger">
+                                        <p [innerHTML]="displayMessage['estado']"></p>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mdoal-footer">
+                        <div class="col-md-offset-2 col-md-10">
+                            <span>
+                                <button class="btn btn-success" type="button" (click)="atualizarEndereco()"
+                                    [disabled]="!enderecoForm.valid"></button>
+                            </span>
+                            <input type="button" class="btn btn-info" value="Fechar" (click)="hideModal()" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
