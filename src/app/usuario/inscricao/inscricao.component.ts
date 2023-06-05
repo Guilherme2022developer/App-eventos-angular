@@ -27,43 +27,41 @@ export class InscricaoComponent implements OnInit, AfterViewInit {
   constructor(private fb: FormBuilder, private organizadorSevice: OrganizadorService, private router: Router, private snotifireService: SnotifireService  ) {
 
     this.validationMessages = {
-      // nome: {
-      //   require: 'O Nome é requirido',
-      //   minlength: 'O Nome precisa ter no mínimo 2 caracteres',
-      //   maxlength: 'O Nome precisa ter no máximo 150 caracteres'
-      // },
-      // cpf: {
-      //   require: 'O CPF é requirido',
-      //   minlength: 'O CPF precisa ter no mínimo 2 caracteres',
-      //   maxlength: 'O CPF precisa ter no máximo 150 caracteres'
-      //   //rangeLength: 'O CPF precisa ter no conter 11 caracteres',
-      // },
-      Email: {
-        require: 'O Email é requirido',
-        email: 'Informe o e-mail',
+      nome: {
+        required: 'O Nome é requerido.',
+        minlength: 'O Nome precisa ter no mínimo 2 caracteres',
+        maxlength: 'O Nome precisa ter no máximo 150 caracteres'
+      },
+      cpf: {
+        required: 'Informe o CPF',
+        rangeLength: 'CPF deve conter 11 caracteres'
+      },
+      email: {
+        required: 'Informe o e-mail',
+        email: 'Email invalido'
+      },
+      senha: {
+        required: 'Informe a senha',
+        minlength: 'A senha deve possuir no mínimo 6 caracteres'
+      },
+      senhaConfirmacao: {
+        required: 'Informe a senha novamente',
+        minlength: 'A senha deve possuir no mínimo 6 caracteres',
+        equalTo: 'As senhas não conferem'
+      }
+    };
 
-      },
-      Password: {
-        require: 'O Senha é requirido',
-        minlength: 'O Senha precisa ter no mínimo 6 caracteres',
-
-      },
-      ConfirmPassWord: {
-        require: 'Informe a senha novamente',
-        minlength: 'O Senha precisa ter no mínimo 6 caracteres',
-        //equalTo: 'As senhas não conferem'
-      },
-    }
-    this.genericValidator = new GenericValidator(this.validationMessages);
+     this.genericValidator = new GenericValidator(this.validationMessages);
+    this.organizador = new Organizador();
   }
 
   ngOnInit() {
     this.inscricaoForm = this.fb.group({
-      //nome: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(150)]],
-     // cpf: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]],
-     Email: ['', [Validators.required, Validators.email]],
-     Password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(50)]],
-     ConfirmPassWord: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(50)]],
+     nome: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(150)]],
+     cpf: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]],
+     email: ['', [Validators.required, Validators.email]],
+     senha: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(50)]],
+     senhaConfirmacao: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(50)]],
      Token:[],
      role:[]
 
@@ -79,8 +77,6 @@ export class InscricaoComponent implements OnInit, AfterViewInit {
   }
 
   adicionarOrganizador() {
-
-    //this.displayMessage = this.genericValidator.processMessages(this.inscricaoForm);
 
     if (this, this.inscricaoForm.valid && this.inscricaoForm.dirty) {
 
@@ -126,8 +122,6 @@ export class InscricaoComponent implements OnInit, AfterViewInit {
       pauseOnHover: true,
     });
     this.errors = fail.error.errors;
-
-    
 
   }
 }

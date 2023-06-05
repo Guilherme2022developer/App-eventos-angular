@@ -27,25 +27,14 @@ export class LoginComponent  implements OnInit, AfterViewInit {
   constructor(private fb: FormBuilder, private organizadorSevice: OrganizadorService, private router: Router, private snotifireService: SnotifireService  ) {
 
     this.validationMessages = {
-      // nome: {
-      //   require: 'O Nome é requirido',
-      //   minlength: 'O Nome precisa ter no mínimo 2 caracteres',
-      //   maxlength: 'O Nome precisa ter no máximo 150 caracteres'
-      // },
-      // cpf: {
-      //   require: 'O CPF é requirido',
-      //   minlength: 'O CPF precisa ter no mínimo 2 caracteres',
-      //   maxlength: 'O CPF precisa ter no máximo 150 caracteres'
-      //   //rangeLength: 'O CPF precisa ter no conter 11 caracteres',
-      // },
-      Email: {
+      email: {
         require: 'O Email é requirido',
         email: 'Informe o e-mail',
 
       },
-      Password: {
+      senha: {
         require: 'O Senha é requirido',
-        minlength: 'O Senha precisa ter no mínimo 6 caracteres',
+        minlength: 'O Senha precisa ter no mínimo 8 caracteres',
 
       }
     }
@@ -55,13 +44,8 @@ export class LoginComponent  implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.loginForm = this.fb.group({
-      //nome: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(150)]],
-     // cpf: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]],
-     Email: ['', [Validators.required, Validators.email]],
-     Password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(50)]],
-     Token:[],
-     role:[]
-
+      email: ['', [Validators.required, Validators.email]],
+      senha: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(150)]],
     });
   }
 
@@ -74,8 +58,6 @@ export class LoginComponent  implements OnInit, AfterViewInit {
   }
 
   login() {
-
-    //this.displayMessage = this.genericValidator.processMessages(this.inscricaoForm);
 
     if (this, this.loginForm.valid && this.loginForm.dirty) {
 
@@ -121,9 +103,6 @@ export class LoginComponent  implements OnInit, AfterViewInit {
         pauseOnHover: true,
       });
       this.errors = fail.error.errors;
-  
-      
-  
     }
 
 }

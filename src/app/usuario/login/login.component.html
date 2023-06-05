@@ -1,56 +1,45 @@
-<h4>Organize seu próprio Evento</h4>
-<hr/>
+<app-menu-superior></app-menu-superior>
+<div class="container main-container">
+  <h4>Seja bem vindo!</h4>
+  <hr />
+  <form novalidate (ngSubmit)="login()" [formGroup]="loginForm">
 
-<form (ngSubmit)="login()" [formGroup]="loginForm" >
-<div class="form-horizontal">
-    <div class="alert alert-danger" *ngIf="errors.length > 0" >
-        <h3 id="msgretorno" >Opa! Alguma coisa não deu certo</h3>
+    <div class="form-horizontal">
+
+      <div class="alert alert-danger" *ngIf="errors.length > 0">
+        <h3 id="msgRetorno">Opa! Alguma coisa não deu certo:</h3>
         <ul>
-            <li *ngFor="let error of errors">
-                 {{error}}
-            </li>
+          <li *ngFor="let error of errors">{{ error }}</li>
         </ul>
+      </div>
+
+      <div class="form-group" [ngClass]="{'has-error': displayMessage['email'] }">
+        <label class="col-md-2 control-label">E-mail</label>
+        <div class="col-md-10">
+          <input class="form-control" id="email" type="text" placeholder="E-mail (requerido)" formControlName="email" />
+          <span class="text-danger" *ngIf="displayMessage['email']">
+              <p [innerHTML]="displayMessage['email']"></p>
+        </span>
+        </div>
+      </div>
+
+      <div class="form-group" [ngClass]="{'has-error': displayMessage['senha'] }">
+        <label class="col-md-2 control-label">Senha</label>
+        <div class="col-md-10">
+          <input class="form-control" id="senha" type="password" placeholder="Senha (requerido)" formControlName="senha" />
+          <span class="text-danger" *ngIf="displayMessage['senha'] ">
+              <p [innerHTML]="displayMessage['senha'] "></p>
+        </span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-md-4 col-md-offset-2">
+          <span><button class="btn btn-success" id="login" type="submit" [disabled]='!loginForm.valid'>Login</button></span>
+          <span><a routerLink="/inscricao" class="btn btn-primary">Ainda não sou cadastrado</a></span>
+        </div>
+      </div>
     </div>
-    <!-- <div class="form-group" [ngClass]="{'has-error' : displayMessage['nome']}" >
-        <label class="col-md2 control-label">Nome Completo</label>
-        <div class="col-md10">
-            <input class="form-control" id="nome" type="text" placeholder="Nome (requerido)" formControlName="nome" >
-            <span class="text-danger">
-                <p [innerHTML]="displayMessage['nome']" ></p>
-            </span>
-        </div>
-    </div> -->
-    <!-- <div class="form-group" [ngClass]="{'has-error': displayMessage['cpf']}" >
-        <label class="col-md2 control-label">CPF</label>
-        <div class="col-md10">
-            <input class="form-control" id="cpf" type="text" placeholder="CPF (requerido)" formControlName="cpf" >
-            <span class="text-danger">
-                <p [innerHTML]="displayMessage['cpf']" ></p>
-            </span>
-        </div>
-    </div> -->
-    <div class="form-group"  [ngClass]="{'has-error': displayMessage['email']}"  >
-        <label class="col-md2 control-label">E-mail</label>
-        <div class="col-md10">
-            <input class="form-control" id="email" type="text" placeholder="E-mail (requerido)" formControlName="Email" >
-            <span class="text-danger">
-                <p [innerHTML]="displayMessage['email']" ></p>
-            </span>
-        </div>
-    </div>
-    <div class="form-group" [ngClass]="{'has-error': displayMessage['senha']}"  >
-        <label class="col-md2 control-label">Senha</label>
-        <div class="col-md10">
-            <input class="form-control" id="senha" type="password" placeholder="Senha (requerido)" formControlName="Password" >
-            <span class="text-danger">
-                <p [innerHTML]="displayMessage['senha']" ></p>
-            </span>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-4 col-md-offset-2" >
-            <button class="btn btn-success" id="entrar" type="submit">entrar</button>
-        </div>
-    </div>
+
+  </form>
 </div>
-</form>
