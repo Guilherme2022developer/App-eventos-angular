@@ -3,7 +3,7 @@
     <a *ngSwitchCase="false"  class="nav-link"[routerLink]="['/entrar']">Entrar</a>
 
    
-    <a *ngSwitchCase="true" class="nav-link" [routerLink]="['/meus-eventos']" >Meus eventos </a>
+    <a *ngSwitchCase="true" class="nav-link" [routerLink]="['/eventos/meus-eventos']" >Meus eventos </a>
     <a *ngSwitchCase="true" class="nav-link" href="javascript:void(0)" >Olá {{nome}} </a>
     <a *ngSwitchCase="true"  class="nav-link" href="javascript:void(0)" (click)="logout()">
         <span class="glyphicon glyphicon-off">Sair</span></a>

@@ -95,8 +95,8 @@ export class InscricaoComponent implements OnInit, AfterViewInit {
   onSalveComplete(response: any){
     this.inscricaoForm.reset();
     this.errors = [];
-    localStorage.setItem('eio.token',response.token);
-    localStorage.setItem('eio.user',JSON.stringify(response.email));
+    localStorage.setItem('eio.token',response.access_token);
+    localStorage.setItem('eio.user',JSON.stringify(response.user.email));
     let toasterMessage =  this.snotifireService.success('Registro realizado com Sucesso!', 'Bem vindo', {
       timeout: 2000,
       showProgressBar: true,

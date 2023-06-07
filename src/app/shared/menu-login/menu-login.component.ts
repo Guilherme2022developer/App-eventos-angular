@@ -15,7 +15,7 @@ constructor(private router: Router ){}
 
 usuarioLogado(): boolean {
   this.token = localStorage.getItem('eio.token');
-  this.user = JSON.parse(localStorage.getItem('eio.user') || '{}');
+  this.user = JSON.parse(localStorage.getItem('eio.nome') || '{}');
   
     if(this.user) {
       this.nome = this.user;
