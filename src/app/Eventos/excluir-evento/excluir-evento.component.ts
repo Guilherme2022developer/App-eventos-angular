@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChildren, ElementRef, ViewContainerRef } from "@angular/core";
 import { FormControlName } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
+import { SnotifireService } from "ngx-snotifire";
 import { Subscription } from "rxjs";
 import { Evento } from "../modls_eventos/evento";
 import { EventoService } from "../services/evento.service";
@@ -16,13 +17,11 @@ export class ExcluirEventoComponent implements OnInit {
   public sub: Subscription;
   public eventoId: string = "";
   public evento: Evento;
-  snotifireService: any;
+ 
 
   constructor(private eventoService: EventoService,
     private route: ActivatedRoute,
-    private router: Router,
-
-    vcr: ViewContainerRef) {
+    private router: Router, private snotifireService: SnotifireService) {
 
 
     this.evento = new Evento();
@@ -42,14 +41,14 @@ export class ExcluirEventoComponent implements OnInit {
 
   public excluirEvento() {
     this.eventoService.ExcluirEvento(this.eventoId).subscribe(
-      result => {this.onDeleteComplete},
-      fail => {this.onError()}
+      result => {this.onDeleteComplete(result)},
+      fail => {this.onError(fail)}
     );
 
   }
 
   public onDeleteComplete(evento: any) {
-    let toasterMessage =  this.snotifireService.success('Apagado  com Sucesso!', 'Bem vindo', {
+    let toasterMessage =  this.snotifireService.success('Evento Apagado com Sucesso!', 'Obaa deu certo..', {
       timeout: 2000,
       showProgressBar: true,
       closeOnClick: true,
@@ -58,12 +57,12 @@ export class ExcluirEventoComponent implements OnInit {
 
     if(toasterMessage){
       toasterMessage.eventEmitter.subscribe(()=>{
-        this.router.navigate(['/lista-eventos']);
+        this.router.navigate(['/eventos/meus-eventos']);
       });
     }
   }
 
-  public onError() {
+  public onError(fail: any) {
     this.snotifireService.error('Ocorreu um erro!', 'OPS!', {
       timeout: 2000,
       showProgressBar: true,

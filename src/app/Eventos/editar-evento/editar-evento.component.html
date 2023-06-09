@@ -169,7 +169,7 @@
         </td>
         <td>
           <div>
-            <button type="button" class="btn btn-info" (click)='showModal()'>
+            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal" (click)="showModal()">
               <span title="Alterar Endereco" class="glyphicon glyphicon-plus-pencil"></span> Alterar Endereço
             </button>
           </div>
@@ -180,7 +180,7 @@
   </div>
 
 
-  <div id="myModal" class="modal fade in" [ngStyle]="{'display': modalVisible ? 'block' : 'none'}">
+  <div id="myModal" class="modal fade" [ngClass]="{'show': modalVisible}" [ngStyle]="{'display': modalVisible ? 'block' : 'none'}">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">

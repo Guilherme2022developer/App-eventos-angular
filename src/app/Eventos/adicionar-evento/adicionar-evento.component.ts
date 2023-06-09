@@ -123,7 +123,7 @@ export class AdicionarEventoComponent implements OnInit, AfterViewInit {
       p.endereco.estado = p.estado;
 
       this.eventoService.registrarEvento(p).subscribe(
-        result => {this.onSalveComplete},
+        result => {this.onSalveComplete(result)},
         fail => {this.onError(fail)}
       );
     }
@@ -132,7 +132,7 @@ export class AdicionarEventoComponent implements OnInit, AfterViewInit {
   onSalveComplete(response: any){
     this.eventoForm.reset();
     this.errors = [];
-    let toasterMessage =  this.snotifireService.success('Registro realizado com Sucesso!', 'Bem vindo', {
+    let toasterMessage =  this.snotifireService.success('Registro realizado com Sucesso!', 'Obaa :)', {
       timeout: 2000,
       showProgressBar: true,
       closeOnClick: true,
