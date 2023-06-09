@@ -20,7 +20,7 @@ export class EventoService extends SeviceBase{
 
         registrarEvento(evento: Evento) : Observable<Evento[]>{
             return this.http
-            .post(this.UrlServiceV1 + "evento", evento, super.ObterAuthHeaderJson())
+            .post(this.UrlServiceV1 + "eventos", evento, super.ObterAuthHeaderJson())
             .pipe(map(super.extractData),catchError(super.seviceError));
         }
 
@@ -41,17 +41,16 @@ export class EventoService extends SeviceBase{
        
         obterMeuEvento(id: string):Observable<Evento>{
             return  this.http
-             .get<Evento>(this.UrlServiceV1 + "eventos/meus-eventos/" + id)
+             .get<Evento>(this.UrlServiceV1 + "eventos/meus-eventos/" + id,super.ObterAuthHeaderJson())
              .pipe(
              catchError(super.seviceError));
          };
 
-         obterMeusEventos():Observable<Evento>{
+         obterMeusEventos() : Observable<Evento[]>{
             return this.http
-            .get(this.UrlServiceV1 + "eventos/meus-eventos",super.ObterAuthHeaderJson())
-            .pipe(map(super.extractData),
-            catchError(super.seviceError));
-        };
+            .get<Evento[]>(this.UrlServiceV1 + "eventos/meus-eventos",super.ObterAuthHeaderJson())
+            .pipe(catchError(super.seviceError));
+        }
 
         atualizarEvento(evento: Evento):Observable<Evento>{
             return this.http

@@ -17,7 +17,7 @@ export class MeusEventosComponent  implements OnInit {
   ngOnInit(){
 
     this.eventoService.obterMeusEventos().subscribe(
-      evento => this.eventos = [evento], // Envolve o objeto evento em um array
+      evento => this.eventos = evento, // Envolve o objeto evento em um array
       error => this.errorMessage = error
     );
   }

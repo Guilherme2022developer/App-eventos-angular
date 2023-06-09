@@ -33,22 +33,21 @@
                     <span *ngSwitchCase="true" class="fa-solid fa-check"></span>
                     <span *ngSwitchCase="false" class="fa-sharp fa-light fa-x"></span>
                 </td>
-
                 <td>
-                    <a [routerLink]="['/detalhes-evento', evento.id]" title="Detalhes" class="btn btn-primary">
-                        <span class="glyphicon glyphicon-search"></span> saber mais
+                    <a [routerLink]="['/eventos/detalhes', evento.id]" title="Detalhes" class="btn btn-primary">
+                      <span class="glyphicon glyphicon-search"></span> saber mais
                     </a>
-                </td>
-                <td>
-                    <a [routerLink]="['/editar-evento', evento.id]" title="Editar" class="btn btn-warning">
-                        <span class="glyphicon glyphicon-search"></span> Editar
+                  </td>
+                  <td>
+                    <a [routerLink]="['/eventos/editar', evento.id]" title="Editar" class="btn btn-warning">
+                      <span class="glyphicon glyphicon-search"></span> Editar
                     </a>
-                </td>
-                <td>
-                    <a [routerLink]="['/excluir-evento', evento.id]" title="Apagar" class="btn btn-danger">
-                        <span class="glyphicon glyphicon-search"></span> Apagar
+                  </td>
+                  <td>
+                    <a [routerLink]="['/eventos/excluir', evento.id]" title="Apagar" class="btn btn-danger">
+                      <span class="glyphicon glyphicon-search"></span> Apagar
                     </a>
-                </td>
+                  </td>
             </tr>
         </table>
     </body>

@@ -1,20 +1,20 @@
 export class Evento {
     id: string;
     nome: string;
-    decricaoCurta: string;
-    descricaoConga: string;
+    descricaoCurta: string;
+    descricaoLonga: string;
     dataInicio: Date;
     dataFim: Date;
-    gratuito: Boolean;
+    gratuito: boolean;
     valor: string;
-    online: Boolean;
+    online: boolean;
     nomeEmpresa: string;
     endereco: Endereco;
     categoriaId: string;
     organizadorId: string;
 }
 
-export class Endereco{
+export class Endereco {
     id: string;
     logradouro: string;
     numero: string;
@@ -26,7 +26,7 @@ export class Endereco{
     eventoId: string;
 }
 
-export interface Categoria{
+export interface Categoria {
     id: string;
     nome: string;
 }

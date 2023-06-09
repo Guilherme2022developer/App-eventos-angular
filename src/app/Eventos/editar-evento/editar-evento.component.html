@@ -28,18 +28,18 @@
       <div class="form-group">
         <label class="col-md-2 control-label">Descrição Curta</label>
         <div class="col-md-10">
-          <input class="form-control" id="descricaoCurta" type="text" placeholder="Descrição Curta" formControlName="descricaoCurta" />
+          <input class="form-control" type="text" placeholder="Descrição Curta" formControlName="descricaoCurta" />
         </div>
       </div>
 
       <div class="form-group">
         <label class="col-md-2 control-label">Mais detalhes</label>
         <div class="col-md-10">
-          <textarea class="form-control" id="descricaoLonga" cols="40" rows="5" placeholder="Descrição Longa" formControlName="descricaoLonga"></textarea>
+          <textarea class="form-control" cols="40" rows="5" placeholder="Descrição Longa" formControlName="descricaoLonga"></textarea>
         </div>
       </div>
 
-      <div class="form-group" [ngClass]="{'has-error': displayMessage['categoriaId'] }">
+      <div class="form-group" [ngClass]="{'has-error': displayMessage['categoriaId']}">
         <label class="col-md-2 control-label">Categoria</label>
         <div class="col-md-10">
           <select class="form-control" formControlName="categoriaId" id="categoriaId">
@@ -54,30 +54,49 @@
       <div class="form-group" [ngClass]="{'has-error': displayMessage['dataInicio'] }">
         <label class="col-md-2 control-label">Data de Início</label>
         <div class="col-md-10">
-          <my-date-picker id="dataInicio" name="dataInicio" [options]="myDatePickerOptions" formControlName="dataInicio"></my-date-picker>
+          <my-date-picker name="dataInicio" [options]="myDatePickerOptions" formControlName="dataInicio"></my-date-picker>
           <span class="text-danger" *ngIf="displayMessage['dataInicio'] ">
               <p [innerHTML]="displayMessage['dataInicio'] "></p>
         </span>
         </div>
       </div>
 
-      <div class="form-group" [ngClass]="{'has-error': displayMessage['dataFim'] }">
+      <div class="form-group" [ngClass]="{'has-error': displayMessage['dataFim']  }">
         <label class="col-md-2 control-label">Data de Encerramento</label>
         <div class="col-md-10">
-          <my-date-picker id="dataFim" name="dataFim" [options]="myDatePickerOptions" formControlName="dataFim"></my-date-picker>
-          <span class="text-danger" *ngIf="displayMessage['dataFim']">
-              <p [innerHTML]="displayMessage['dataFim']"></p>
+          <my-date-picker name="dataFim" [options]="myDatePickerOptions" formControlName="dataFim"></my-date-picker>
+          <span class="text-danger" *ngIf="displayMessage['dataFim'] ">
+              <p [innerHTML]="displayMessage['dataFim'] "></p>
         </span>
         </div>
       </div>
 
-      <div class="form-group" [ngClass]="{'has-error': displayMessage['gratuito'] }">
+      <div class="form-group" [ngClass]="{'has-error': displayMessage['gratuito']  }">
         <div class="col-md-offset-2 col-md-10">
           <div class="checkbox">
             <input type="checkbox" name="gratuito" id="gratuito" [(ngModel)]="gratuito" formControlName="gratuito">
             <label for="gratuito">Será gratuito?</label>
             <span class="text-danger" *ngIf="displayMessage['gratuito']">
               <p [innerHTML]="displayMessage['gratuito']"></p>
+          </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="!gratuito">
+        <label class="col-md-2 control-label">Valor</label>
+        <div class="col-md-10">
+          <input class="form-control" value="0" type="text" placeholder="Valor R$" formControlName="valor" />
+        </div>
+      </div>
+
+      <div class="form-group" [ngClass]="{'has-error': displayMessage['online'] }">
+        <div class="col-md-offset-2 col-md-10">
+          <div class="checkbox">
+            <input type="checkbox" name="online" [(ngModel)]="online" id="online" formControlName="online">
+            <label for="online">Será online?</label>
+            <span class="text-danger" *ngIf="displayMessage['online']">
+              <p [innerHTML]="displayMessage['online']"></p>
           </span>
           </div>
         </div>
@@ -174,10 +193,10 @@
           <div class="modal-body">
             <div class="form-horizontal">
 
-              <div class="alert alert-danger" *ngIf="">
+              <div class="alert alert-danger" *ngIf="errorsEndereco.length > 0">
                 <h3 id="msgRetorno">Opa! Alguma coisa não deu certo:</h3>
                 <ul>
-                  <li *ngFor="let error of ">{{ error }}</li>
+                  <li *ngFor="let error of errorsEndereco">{{ error }}</li>
                 </ul>
               </div>
 

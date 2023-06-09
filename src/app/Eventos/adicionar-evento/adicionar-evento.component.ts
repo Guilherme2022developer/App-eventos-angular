@@ -104,8 +104,14 @@ export class AdicionarEventoComponent implements OnInit, AfterViewInit {
       let p = Object.assign({}, this.evento, this.eventoForm.value);
       p.organizadorId = user.id;
       
+      p.nome = p.nome;
+      p.descricaoCurta = p.descricaoCurta;
+      p.descricaoLonga = p.descricaoLonga;
+      p.gratuito = p.gratuito;
+      p.valor = p.valor;
+      p.online = p.online;
+      p.nomeEmpresa = p.nomeEmpresa
       p.valor = CurrencyUtils.ToDecimal(p.valor);
-
       p.dataInicio = DateUtils.getMyDatePickerDate(p.dataInicio);
       p.dataFim = DateUtils.getMyDatePickerDate(p.dataFim);
       p.endereco.logradouro = p.logradouro;
@@ -135,7 +141,7 @@ export class AdicionarEventoComponent implements OnInit, AfterViewInit {
 
     if(toasterMessage){
       toasterMessage.eventEmitter.subscribe(()=>{
-        this.router.navigate(['/lista-eventos']);
+        this.router.navigate(['/eventos/meus-eventos']);
       });
     }
     

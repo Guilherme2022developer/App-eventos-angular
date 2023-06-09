@@ -77,7 +77,7 @@ export class LoginComponent  implements OnInit, AfterViewInit {
     this.loginForm.reset();
     this.errors = [];
     localStorage.setItem('eio.token',response.access_token);
-    localStorage.setItem('eio.user',JSON.stringify(response.user.email));
+    localStorage.setItem('eio.user',JSON.stringify(response.user));
     localStorage.setItem('eio.nome',JSON.stringify(response.user.nome));
     let toasterMessage =  this.snotifireService.success('Login realizado com Sucesso!', 'Bem vindo', {
       timeout: 4000,

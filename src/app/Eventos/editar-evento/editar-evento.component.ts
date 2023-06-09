@@ -13,31 +13,33 @@ import { Categoria, Endereco, Evento } from '../modls_eventos/evento';
 
 @Component({
   selector: 'app-editar-evento',
-  templateUrl: './editar-evento.component.html',
-  styleUrls: ['./editar-evento.component.css']
+  templateUrl: './editar-evento.component.html'
 })
 export class EditarEventoComponent implements OnInit, AfterViewInit {
-
   @ViewChildren(FormControlName, { read: ElementRef }) formInputElements: ElementRef[];
 
   public myDatePickerOptions = DateUtils.getMyDatePickerOptions();
 
-
+  public errors: any[] = [];
+  public errorsEndereco: any[] = [];
   public eventoForm: FormGroup;
   public enderecoForm: FormGroup;
-  public errors: any[] = [];
   public evento: Evento;
+  public endereco: Endereco;
   public categorias: Categoria[];
-  public gratuito: Boolean;
-  public online: Boolean = false;
-  public isDataAvailable : boolean;
-  public modalVisible : boolean = false;
-  public EventoId: string;
+  public eventoId: string = "";
+
+  public gratuito: boolean;
+  public online: boolean;
   public sub: Subscription;
+  public modalVisible: boolean;
 
+  constructor(private fb: FormBuilder,
+    private eventoService: EventoService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private snotifireService: SnotifireService) {
 
-
-  constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute, private snotifireService: SnotifireService, private eventoService: EventoService) {
     this.validationMessages = {
       nome: {
         required: 'O Nome é requerido.',
@@ -59,12 +61,49 @@ export class EditarEventoComponent implements OnInit, AfterViewInit {
     this.evento = new Evento();
     this.evento.endereco = new Endereco();
     this.modalVisible = false;
-
   }
 
+  displayMessage: { [key: string]: string } = {};
   private validationMessages: { [key: string]: { [key: string]: string } };
   private genericValidator: GenericValidator;
-  public displayMessage: { [key: string]: string } = {};
+
+  ngOnInit() {
+    this.eventoForm = this.fb.group({
+      nome: ['', [Validators.required,
+      Validators.minLength(2),
+      Validators.maxLength(150)]],
+      categoriaId: ['', Validators.required],
+      descricaoCurta: '',
+      descricaoLonga: '',
+      dataInicio: ['', Validators.required],
+      dataFim: ['', Validators.required],
+      gratuito: '',
+      valor: '0',
+      online: '',
+      nomeEmpresa: ''
+    });
+
+    this.enderecoForm = this.fb.group({
+      logradouro: ['', Validators.required],
+      numero: ['', Validators.required],
+      complemento: '',
+      bairro: ['', Validators.required],
+      cep: ['', Validators.required],
+      cidade: ['', Validators.required],
+      estado: ['', Validators.required],
+    });
+
+    this.sub = this.route.params.subscribe(
+      params => {
+        this.eventoId = params['id'];
+        this.obterEvento(this.eventoId);
+      }
+    );
+
+    this.eventoService.ObterCategoria()
+      .subscribe(categorias => this.categorias = categorias,
+      error => this.errors);
+  }
 
   ngAfterViewInit() {
     let controlBlurs: Observable<any>[] = this.formInputElements.map((formControl: ElementRef) => fromEvent(formControl.nativeElement, 'blur'));
@@ -74,146 +113,96 @@ export class EditarEventoComponent implements OnInit, AfterViewInit {
     });
   }
 
-
-
-  ngOnInit() {
-    this.eventoForm = this.fb.group({
-      nome: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(150)]],
-      // cpf: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]],
-      organizadorId: ['', [Validators.required]],
-      decricaoCurta: [''],
-      descricaolonga: [''],
-      dataInicio: ['', [Validators.required]],
-      datafim: ['', [Validators.required]],
-      gratuito: [''],
-      valor: ['0'],
-      online: [''],
-      nomeEmpresa: [''],
-      logradouro: [''],
-      numero: [''],
-      complemento: [''],
-      bairro: [''],
-      cidade: [''],
-      estado: [''],
-      cep: [''],
-      Token: [],
-      role: []
-
-    });
-
-    this.enderecoForm = this.fb.group({
-      logradouro: ['', Validators.required],
-      numero: ['', Validators.required],
-      complemento: [''],
-      bairro: ['', Validators.required],
-      cep: ['', Validators.required],
-      cidade: ['', Validators.required],
-      estado: ['', Validators.required]
-    });
-
-
-    this.sub = this.route.params.subscribe(
-      params => {
-        this.EventoId = params['id'];
-        this.obterEvento(this.EventoId);
-      }
-    );
-
-    this.eventoService.ObterCategoria()
+  obterEvento(id: string) {
+    this.eventoService.obterEvento(id)
       .subscribe(
-        categorias => this.categorias = categorias,
-        error => this.errors = error);
+      evento => this.preencherFormEvento(evento),
+      );
   }
 
-  obterEvento(id: string){
-    this.eventoService.obterMeuEvento(id).subscribe((evento: Evento)=> {this.preencherFormEvento(evento),this.isDataAvailable = true})
-  }
+  preencherFormEvento(evento: Evento): void {
+    this.evento = evento;
 
-  preencherFormEvento(evento: Evento): void{
-   this.evento = evento;
-   let valorBrl = CurrencyUtils.ToPrice(this.evento.valor);
+    let valorBrl = CurrencyUtils.ToPrice(this.evento.valor);
 
-   this.eventoForm.patchValue({
-    nome: this.evento.nome,
-    categoriaId: this.evento.categoriaId,
-    descricaoCurta: this.evento.decricaoCurta,
-    descricaoLonga: this.evento.descricaoConga,
-    dataInicio: DateUtils.setMyDatePickerDate(this.evento.dataInicio),
-    dataFim: DateUtils.setMyDatePickerDate(this.evento.dataFim),
-    gratuito: this.evento.gratuito,
-    valor: valorBrl,
-    online: this.evento.online,
-    nomeEmpresa: this.evento.nomeEmpresa
-   });
-
-    this.online = this.evento.online;
-    this.gratuito = this.evento.gratuito;
-
-   if(this.evento.endereco){
-    this.enderecoForm.patchValue({
-      logradouro: this.evento.endereco.logradouro,
-      numero: this.evento.endereco.numero,
-      complememto: this.evento.endereco.complemento,
-      bairro: this.evento.endereco.bairro,
-      cep: this.evento.endereco.cep,
-      cidade: this.evento.endereco.cidade,
-      estado: this.evento.endereco.estado
+    this.eventoForm.patchValue({
+      nome: this.evento.nome,
+      categoriaId: this.evento.categoriaId,
+      descricaoCurta: this.evento.descricaoCurta,
+      descricaoLonga: this.evento.descricaoLonga,
+      dataInicio: DateUtils.setMyDatePickerDate(this.evento.dataInicio),
+      dataFim: DateUtils.setMyDatePickerDate(this.evento.dataFim),
+      gratuito: this.evento.gratuito,
+      valor: valorBrl,
+      online: this.evento.online,
+      nomeEmpresa: this.evento.nomeEmpresa,
     });
-   }
 
+    if (this.evento.endereco) {
+      this.enderecoForm.patchValue({
+        logradouro: this.evento.endereco.logradouro,
+        numero: this.evento.endereco.numero,
+        complemento: this.evento.endereco.complemento,
+        bairro: this.evento.endereco.bairro,
+        cep: this.evento.endereco.cep,
+        cidade: this.evento.endereco.cidade,
+        estado: this.evento.endereco.estado
+      });
+    }
   }
 
-  editarEvento(){
-    if(this.eventoForm.dirty && this.eventoForm.valid){
-      let p = Object.assign({},this.evento,this.eventoForm.value);
+  editarEvento() {
+    if (this.eventoForm.dirty && this.eventoForm.valid) {
+      let p = Object.assign({}, this.evento, this.eventoForm.value);
       let user = this.eventoService.obterUsuario();
       p.organizadorId = user.id;
       p.dataInicio = DateUtils.getMyDatePickerDate(p.dataInicio);
-      p.DataFim = DateUtils.getMyDatePickerDate(p.DataFim);
+      p.dataFim = DateUtils.getMyDatePickerDate(p.dataFim);
       p.valor = CurrencyUtils.ToDecimal(p.valor);
 
-      this.eventoService.atualizarEvento(p).subscribe(
+     this.eventoService.atualizarEvento(p).subscribe(
         result => {this.onSalveComplete},
         fail => {this.onError(fail)}
       );
     }
   }
-atualizarEndereco(){
-  if(this.enderecoForm.dirty && this.enderecoForm.valid){
-    let p = Object.assign({},this.enderecoForm.value);
-    p.eventoId = this.EventoId;
-    if(this.evento.endereco){
-      p.id = this.evento.endereco.id;
-      this.eventoService.atualizarEndereco(p).subscribe(
-        result => {this.onEnderecoSaveComplete},
-        fail => {this.onError(fail)}
-      );
-    }else{
-      this.eventoService.adicionarEndereco(p).subscribe(
-        result => {this.onEnderecoSaveComplete},
-        fail => {this.onError(fail)}
-      );
+
+  atualizarEndereco() {
+    if (this.enderecoForm.dirty && this.enderecoForm.valid) {
+      let p = Object.assign({}, this.endereco, this.enderecoForm.value);
+      p.eventoId = this.eventoId;
+
+      if (this.evento.endereco) {
+        p.id = this.evento.endereco.id;
+        this.eventoService.atualizarEndereco(p)
+          .subscribe(
+          result => { this.onEnderecoSaveComplete() },
+          fail => { this.onErrorEndereco(fail) });
+      }
+      else {
+        this.eventoService.adicionarEndereco(p)
+          .subscribe(
+          result => { this.onEnderecoSaveComplete() },
+          fail => { this.onErrorEndereco(fail) });
+      }
     }
   }
-}
 
-onEnderecoSaveComplete(): void{
-  this.hideModal();
-  this.snotifireService.success('Endereço Atualizado com Sucesso!', 'Bem vindo', {
-    timeout: 2000,
-    showProgressBar: true,
-    closeOnClick: true,
-    pauseOnHover: true,
-  });
+  onEnderecoSaveComplete(): void {
+    this.hideModal();
 
-  this.obterEvento(this.evento.id)
-  
-}
+    let toasterMessage =  this.snotifireService.success('Endereço salvo com Sucesso!', 'Bem vindo', {
+      timeout: 2000,
+      showProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+    });
+    this.obterEvento(this.eventoId);
+  }
 
   onSalveComplete(response: any){
-    this.eventoForm.reset();
     this.errors = [];
-    let toasterMessage =  this.snotifireService.success('Atualizado com Sucesso!', 'Bem vindo', {
+    let toasterMessage =  this.snotifireService.success('Evento atualizado com Sucesso!', 'Bem vindo', {
       timeout: 2000,
       showProgressBar: true,
       closeOnClick: true,
@@ -222,7 +211,7 @@ onEnderecoSaveComplete(): void{
 
     if(toasterMessage){
       toasterMessage.eventEmitter.subscribe(()=>{
-        this.router.navigate(['/lista-eventos']);
+        this.router.navigate(['/eventos/meus-eventos']);
       });
     }
     
@@ -230,22 +219,31 @@ onEnderecoSaveComplete(): void{
 
   onError(fail: any) {
 
-  this.snotifireService.error('Ocorreu um erro!', 'OPS!', {
+    this.snotifireService.error('Ocorreu um erro!', 'OPS!', {
+        timeout: 2000,
+        showProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+      });
+      this.errors = fail.error.errors;
+  
+    }
+
+  onErrorEndereco(fail: any) {
+    this.snotifireService.error('Ocorreu um erro!', 'OPS!', {
       timeout: 2000,
       showProgressBar: true,
       closeOnClick: true,
       pauseOnHover: true,
     });
-    this.errors = fail.error.errors;
-
+    this.errorsEndereco = fail.error.errors;
   }
 
-  public showModal(): void{
-    this.modalVisible = true
+  public showModal(): void {
+    this.modalVisible = true;
   }
 
-  public hideModal(): void{
-    this.modalVisible = false
+  public hideModal(): void {
+    this.modalVisible = false;
   }
-
 }
