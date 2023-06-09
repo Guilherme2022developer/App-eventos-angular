@@ -31,7 +31,9 @@
                 <span *ngSwitchCase="false" class="fa-sharp fa-light fa-x" ></span>
             </td>
 
-            <td><a title="Detalhes" class="btn btn-primary" ><span class="glyphicon glyphicon-search" ></span> saber mais </a></td>
+            <td><a [routerLink]="['/eventos/detalhes', evento.id]" title="Detalhes" class="btn btn-primary">
+                <span class="glyphicon glyphicon-search"></span> saber mais
+              </a></td>
         </tr>
     </table>
 </body>
